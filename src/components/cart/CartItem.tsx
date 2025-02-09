@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import { useCart } from '@/hooks/useCart';
 import { Product } from '@/types/product';

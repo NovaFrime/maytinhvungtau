@@ -76,6 +76,23 @@ export interface Brand {
   featured?: boolean;
 }
 
+export type StockStatus = 'in_stock' | 'out_of_stock' | 'low_stock' | 'discontinued';
+
+export const STOCK_STATUS_LABELS: Record<StockStatus, string> = {
+  in_stock: 'Còn hàng',
+  out_of_stock: 'Hết hàng',
+  low_stock: 'Sắp hết hàng',
+  discontinued: 'Ngừng kinh doanh'
+};
+
+export const SORT_OPTIONS = [
+  { value: 'price-asc', label: 'Giá: Thấp đến cao' },
+  { value: 'price-desc', label: 'Giá: Cao đến thấp' },
+  { value: 'name-asc', label: 'Tên: A-Z' },
+  { value: 'name-desc', label: 'Tên: Z-A' },
+  { value: 'rating-desc', label: 'Đánh giá cao nhất' }
+];
+
 export interface Product {
   id: string;
   name: string;
@@ -87,7 +104,7 @@ export interface Product {
   discountPrice?: number;
   stock: number;
   sku: string;
-  stockStatus: 'in_stock' | 'out_of_stock' | 'low_stock' | 'discontinued';
+  stockStatus: StockStatus;
   category: ProductCategory;
   brand: Brand;
   images: string[];
