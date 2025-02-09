@@ -1,11 +1,18 @@
+'use client';
+
 import { useState, useCallback, useMemo } from 'react';
 import { Product, ProductFilterParams } from '@/types/product';
 import { mockProducts } from '@/lib/mockData';
 import { formatPrice } from '@/utils/format';
 
-export const useProducts = (initialFilters: ProductFilterParams = {}) => {
+interface UseProductsConfig {
+  initialFilters?: ProductFilterParams;
+  products?: Product[];
+}
+
+export const useProducts = (config: UseProductsConfig = {}) => {
+  const { initialFilters = {}, products = mockProducts } = config;
   const [filters, setFilters] = useState<ProductFilterParams>(initialFilters);
-  const products = mockProducts;
 
   const priceRange = useMemo(() => {
     const prices = products.map(p => p.price);
@@ -56,7 +63,7 @@ export const useProducts = (initialFilters: ProductFilterParams = {}) => {
 
   const getSortedProducts = useCallback(() => {
     const sorted = [...filteredProducts];
-    const { sort, sortBy } = filters;
+    const { sort } = filters;
 
     if (!sort) return sorted;
 
@@ -93,6 +100,10 @@ export const useProducts = (initialFilters: ProductFilterParams = {}) => {
       .slice(0, limit);
   }, [products]);
 
+  const isProductInStock = useCallback((product: Product) => {
+    return product.stockStatus === 'in_stock';
+  }, []);
+
   const formatProductPrice = useCallback((price: number) => formatPrice(price), []);
 
   return {
@@ -102,7 +113,8 @@ export const useProducts = (initialFilters: ProductFilterParams = {}) => {
     filters,
     setFilters,
     getRelatedProducts,
-    formatProductPrice
+    formatProductPrice,
+    isProductInStock
   };
 };
 
