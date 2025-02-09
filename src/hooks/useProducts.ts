@@ -1,170 +1,109 @@
-'use client';
-
-import { useMemo, useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Product, ProductFilterParams } from '@/types/product';
+import { mockProducts } from '@/lib/mockData';
 import { formatPrice } from '@/utils/format';
 
-interface UseProductsProps {
-  products: Product[];
-  initialFilters?: ProductFilterParams;
-}
-
-interface UseProductsReturn {
-  filteredProducts: Product[];
-  filters: ProductFilterParams;
-  setFilters: (filters: ProductFilterParams) => void;
-  totalProducts: number;
-  priceRange: {
-    min: number;
-    max: number;
-  };
-  sortOptions: Array<{
-    value: ProductFilterParams['sortBy'];
-    label: string;
-  }>;
-  getSortedAndFilteredProducts: () => Product[];
-  getRelatedProducts: (product: Product, limit?: number) => Product[];
-  formatProductPrice: (price: number) => string;
-  calculateDiscount: (originalPrice: number, currentPrice: number) => number;
-  isProductInStock: (product: Product) => boolean;
-  isProductLowStock: (product: Product) => boolean;
-}
-
-const sortOptions: Array<{ value: ProductFilterParams['sortBy']; label: string }> = [
-  { value: undefined, label: 'Featured' },
-  { value: 'price_asc', label: 'Price: Low to High' },
-  { value: 'price_desc', label: 'Price: High to Low' },
-  { value: 'rating', label: 'Best Rating' },
-  { value: 'newest', label: 'Newest' },
-];
-
-export const useProducts = ({ products, initialFilters = {} }: UseProductsProps): UseProductsReturn => {
+export const useProducts = (initialFilters: ProductFilterParams = {}) => {
   const [filters, setFilters] = useState<ProductFilterParams>(initialFilters);
+  const products = mockProducts;
 
-  // Calculate price range
   const priceRange = useMemo(() => {
-    return products.reduce(
-      (acc, product) => ({
-        min: Math.min(acc.min, product.price),
-        max: Math.max(acc.max, product.price),
-      }),
-      { min: Infinity, max: -Infinity }
-    );
+    const prices = products.map(p => p.price);
+    return {
+      min: Math.min(...prices),
+      max: Math.max(...prices)
+    };
   }, [products]);
 
-  // Filter products based on current filters
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
-      // Category filter
       if (filters.category && product.category.id !== filters.category) {
         return false;
       }
 
-      // Brand filter
       if (filters.brand && product.brand.id !== filters.brand) {
         return false;
       }
 
-      // Price range filter
       if (filters.minPrice && product.price < filters.minPrice) {
         return false;
       }
+
       if (filters.maxPrice && product.price > filters.maxPrice) {
         return false;
       }
 
-      // Stock filter
       if (filters.inStock && product.stockStatus !== 'in_stock') {
         return false;
       }
 
-      // Search filter
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
-        return (
-          product.name.toLowerCase().includes(searchTerm) ||
-          product.description.toLowerCase().includes(searchTerm) ||
-          product.brand.name.toLowerCase().includes(searchTerm) ||
-          product.category.name.toLowerCase().includes(searchTerm) ||
-          product.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-        );
+        const searchFields = [
+          product.name,
+          product.description,
+          product.brand.name,
+          product.category.name,
+          ...product.tags
+        ].map(field => field.toLowerCase());
+
+        return searchFields.some(field => field.includes(searchTerm));
       }
 
       return true;
     });
   }, [products, filters]);
 
-  // Sort filtered products
-  const getSortedAndFilteredProducts = () => {
+  const getSortedProducts = useCallback(() => {
     const sorted = [...filteredProducts];
-    
-    switch (filters.sortBy) {
-      case 'price_asc':
-        return sorted.sort((a, b) => a.price - b.price);
-      case 'price_desc':
-        return sorted.sort((a, b) => b.price - a.price);
-      case 'rating':
-        return sorted.sort((a, b) => b.rating - a.rating);
-      case 'newest':
-        return sorted.sort((a, b) => 
-          b.createdAt.getTime() - a.createdAt.getTime()
-        );
-      default:
-        return sorted.sort((a, b) => {
-          if (a.featured !== b.featured) {
-            return b.featured ? 1 : -1;
-          }
-          return a.name.localeCompare(b.name);
-        });
-    }
-  };
+    const { sort, sortBy } = filters;
 
-  // Get related products
-  const getRelatedProducts = (product: Product, limit: number = 4): Product[] => {
+    if (!sort) return sorted;
+
+    sorted.sort((a, b) => {
+      switch (sort) {
+        case 'price-asc':
+          return a.price - b.price;
+        case 'price-desc':
+          return b.price - a.price;
+        case 'name-asc':
+          return a.name.localeCompare(b.name);
+        case 'name-desc':
+          return b.name.localeCompare(a.name);
+        case 'rating-desc':
+          return b.rating - a.rating;
+        default:
+          return 0;
+      }
+    });
+
+    return sorted;
+  }, [filteredProducts, filters]);
+
+  const getRelatedProducts = useCallback((product: Product, limit: number = 4): Product[] => {
     return products
-      .filter(p => 
-        (p.category.id === product.category.id || p.brand.id === product.brand.id) &&
-        p.id !== product.id
-      )
+      .filter(p => p.id !== product.id)
       .sort((a, b) => {
-        // Prioritize products from the same category and brand
         const aScore = (a.category.id === product.category.id ? 2 : 0) +
-                      (a.brand.id === product.brand.id ? 1 : 0);
+          (a.brand.id === product.brand.id ? 1 : 0);
         const bScore = (b.category.id === product.category.id ? 2 : 0) +
-                      (b.brand.id === product.brand.id ? 1 : 0);
+          (b.brand.id === product.brand.id ? 1 : 0);
         return bScore - aScore;
       })
       .slice(0, limit);
-  };
+  }, [products]);
 
-  // Helper functions
-  const formatProductPrice = (price: number) => formatPrice(price);
-
-  const calculateDiscount = (originalPrice: number, currentPrice: number): number => {
-    if (!originalPrice || originalPrice <= currentPrice) return 0;
-    return Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
-  };
-
-  const isProductInStock = (product: Product): boolean => {
-    return product.stockStatus === 'in_stock';
-  };
-
-  const isProductLowStock = (product: Product): boolean => {
-    return product.stockStatus === 'low_stock';
-  };
+  const formatProductPrice = useCallback((price: number) => formatPrice(price), []);
 
   return {
+    products: getSortedProducts(),
     filteredProducts,
+    priceRange,
     filters,
     setFilters,
-    totalProducts: products.length,
-    priceRange,
-    sortOptions,
-    getSortedAndFilteredProducts,
     getRelatedProducts,
-    formatProductPrice,
-    calculateDiscount,
-    isProductInStock,
-    isProductLowStock,
+    formatProductPrice
   };
 };
+
+export default useProducts;

@@ -1,85 +1,40 @@
-'use client';
-
-import { useStore } from '@/store/useStore';
-import { Product } from '@/types/product';
+import { useMemo } from 'react';
+import useStore from '@/store/useStore';
+import { formatPrice } from '@/utils/format';
 
 export const useCart = () => {
-  const cart = useStore(state => state.cart);
-  const cartTotal = useStore(state => state.cartTotal);
-  const addToCart = useStore(state => state.addToCart);
-  const removeFromCart = useStore(state => state.removeFromCart);
-  const updateQuantity = useStore(state => state.updateQuantity);
-  const clearCart = useStore(state => state.clearCart);
+  const { cart, addToCart, removeFromCart, updateCartQuantity, clearCart } = useStore();
 
-  const getItemQuantity = (productId: string) => {
-    const item = cart.find(item => item.product.id === productId);
-    return item?.quantity || 0;
-  };
+  const cartTotal = useMemo(() => {
+    return cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
+  }, [cart]);
 
-  const isInCart = (productId: string) => {
-    return cart.some(item => item.product.id === productId);
-  };
+  const cartItemsCount = useMemo(() => {
+    return cart.reduce((count, item) => count + item.quantity, 0);
+  }, [cart]);
 
   const calculateShipping = () => {
-    // Free shipping over 10M VND
     return cartTotal >= 10000000 ? 0 : 50000;
   };
 
-  const calculateTotal = () => {
-    const shipping = calculateShipping();
-    return cartTotal + shipping;
-  };
+  const orderTotal = useMemo(() => {
+    return cartTotal + calculateShipping();
+  }, [cartTotal]);
 
-  const addItem = (product: Product, quantity: number = 1) => {
-    if (quantity <= 0) return;
-    if (quantity > product.stock) {
-      quantity = product.stock;
-    }
-    addToCart(product, quantity);
-  };
-
-  const removeItem = (productId: string) => {
-    removeFromCart(productId);
-  };
-
-  const updateItem = (productId: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(productId);
-      return;
-    }
-    const item = cart.find(item => item.product.id === productId);
-    if (item && quantity <= item.product.stock) {
-      updateQuantity(productId, quantity);
-    }
-  };
-
-  const getSummary = () => {
-    const subtotal = cartTotal;
-    const shipping = calculateShipping();
-    const total = subtotal + shipping;
-    const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-    return {
-      subtotal,
-      shipping,
-      total,
-      itemCount,
-      freeShippingThreshold: 10000000,
-      remainingForFreeShipping: Math.max(0, 10000000 - subtotal)
-    };
-  };
+  const formatCartPrice = (price: number) => formatPrice(price);
 
   return {
     cart,
     cartTotal,
-    addItem,
-    removeItem,
-    updateItem,
+    cartItemsCount,
+    shippingFee: calculateShipping(),
+    orderTotal,
+    addToCart,
+    removeFromCart,
+    updateCartQuantity,
     clearCart,
-    getItemQuantity,
-    isInCart,
-    calculateShipping,
-    calculateTotal,
-    getSummary
+    formatCartPrice
   };
 };
+
+export default useCart;

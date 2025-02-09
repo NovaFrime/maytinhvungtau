@@ -1,160 +1,93 @@
-'use client';
-
 import { useState, useCallback, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import { Product } from '@/types/product';
 
-interface UseSearchProps {
-  products: Product[];
-  minSearchLength?: number;
-  maxResults?: number;
+interface SearchResult {
+  item: Product;
+  score: number;
 }
 
-export interface SearchResult {
-  id: string;
-  title: string;
-  subtitle: string;
-  image: string;
-  url: string;
-  relevance: number;
-}
-
-interface UseSearchReturn {
-  search: (query: string) => void;
-  results: SearchResult[];
-  isLoading: boolean;
-  error: string | null;
-  query: string;
-  clearSearch: () => void;
-  searchUrl: string;
-}
-
-export const useSearch = ({
-  products,
-  minSearchLength = 2,
-  maxResults = 5
-}: UseSearchProps): UseSearchReturn => {
-  const router = useRouter();
+export const useSearch = (products: Product[]) => {
   const [query, setQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
 
-  // Prepare search index
   const searchIndex = useMemo(() => {
     return products.map(product => ({
-      id: product.id,
-      searchableText: `
-        ${product.name.toLowerCase()}
-        ${product.description.toLowerCase()}
-        ${product.brand.name.toLowerCase()}
-        ${product.category.name.toLowerCase()}
-        ${product.tags.join(' ').toLowerCase()}
-      `.replace(/\s+/g, ' ').trim(),
-      product
+      ...product,
+      searchText: [
+        product.name,
+        product.brand.name,
+        product.category.name,
+        product.description,
+        ...product.tags
+      ].join(' ').toLowerCase()
     }));
   }, [products]);
 
-  // Search function
   const performSearch = useCallback((searchQuery: string): SearchResult[] => {
-    if (searchQuery.length < minSearchLength) {
-      return [];
-    }
-
-    const normalizedQuery = searchQuery.toLowerCase().trim();
-    const queryTerms = normalizedQuery.split(/\s+/);
-
-    // Calculate relevance score for each product
+    const queryTerms = searchQuery.toLowerCase().split(' ').filter(Boolean);
+    
     const scoredResults = searchIndex
-      .map(({ id, searchableText, product }) => {
-        let relevance = 0;
-
-        // Check each search term
+      .map(product => {
+        let score = 0;
+        
         queryTerms.forEach(term => {
-          // Exact matches in name
           if (product.name.toLowerCase().includes(term)) {
-            relevance += 10;
+            score += 10;
           }
-          // Exact matches in brand or category
+          
           if (product.brand.name.toLowerCase().includes(term) ||
               product.category.name.toLowerCase().includes(term)) {
-            relevance += 5;
+            score += 5;
           }
-          // Matches in tags
+          
           if (product.tags.some(tag => tag.toLowerCase().includes(term))) {
-            relevance += 3;
+            score += 3;
           }
-          // Matches in description
+          
           if (product.description.toLowerCase().includes(term)) {
-            relevance += 1;
+            score += 1;
           }
         });
 
-        if (relevance > 0) {
-          return {
-            id: product.id,
-            title: product.name,
-            subtitle: product.brand.name,
-            image: product.images[0],
-            url: `/product/${product.slug}`,
-            relevance
-          };
-        }
-        return null;
+        return {
+          item: product,
+          score
+        };
       })
-      .filter((result): result is SearchResult => result !== null)
-      .sort((a, b) => b.relevance - a.relevance)
-      .slice(0, maxResults);
+      .filter(result => result.score > 0)
+      .sort((a, b) => b.score - a.score);
 
     return scoredResults;
-  }, [searchIndex, minSearchLength]);
+  }, [searchIndex]);
 
-  // Handle search
   const search = useCallback((searchQuery: string) => {
     setQuery(searchQuery);
-    setError(null);
-
-    if (searchQuery.length < minSearchLength) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      performSearch(searchQuery);
-    } catch (err) {
-      setError('An error occurred while searching');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [minSearchLength, performSearch]);
-
-  // Get search results
-  const results = useMemo(() => {
-    if (query.length < minSearchLength) return [];
-    return performSearch(query);
-  }, [query, minSearchLength, performSearch]);
-
-  // Clear search
-  const clearSearch = useCallback(() => {
-    setQuery('');
-    setError(null);
+    setIsSearching(true);
   }, []);
 
-  // Generate search URL
+  const results = useMemo(() => {
+    if (!query) return [];
+    return performSearch(query);
+  }, [query, performSearch]);
+
+  const clearSearch = useCallback(() => {
+    setQuery('');
+    setIsSearching(false);
+  }, []);
+
   const searchUrl = useMemo(() => {
-    if (!query) return '/products';
-    const params = new URLSearchParams();
-    params.set('q', query);
-    return `/products?${params.toString()}`;
+    if (!query) return '';
+    return `/products?search=${encodeURIComponent(query)}`;
   }, [query]);
 
   return {
-    search,
-    results,
-    isLoading,
-    error,
     query,
+    results: results.map(r => r.item),
+    isSearching,
+    search,
     clearSearch,
     searchUrl
   };
 };
+
+export default useSearch;

@@ -1,191 +1,113 @@
-import { BaseCategory, MediaFile } from './common';
+import { BaseCategory } from './common';
 
-// Product Variants
 export interface ProductVariant {
   id: string;
-  sku: string;
   name: string;
+  sku: string;
   price: number;
-  originalPrice?: number;
   stock: number;
-  attributes: {
-    [key: string]: string;
-  };
-  images: string[];
+  attributes: Record<string, string>;
 }
 
-// Product Specifications
 export interface ProductSpecs {
-  [key: string]: string | number | boolean;
+  weight: number;
+  dimensions: {
+    length: number;
+    width: number;
+    height: number;
+  };
+  manufacturer: string;
+  model: string;
+  warranty: string;
+  processor?: string;
+  memory?: string;
+  graphics?: string;
+  storage?: string;
+  display?: string;
+  connectivity?: string;
+  ports?: string[];
+  battery?: string;
+  os?: string;
 }
 
-// Product Review
 export interface Review {
   id: string;
   userId: string;
   userName: string;
   rating: number;
   comment: string;
-  images?: string[];
-  likes: number;
-  verified: boolean;
   createdAt: Date;
-  updatedAt: Date;
+  helpful: number;
 }
 
-// Product Category with specific e-commerce fields
 export interface ProductCategory extends BaseCategory {
+  slug: string;
+  description: string;
+  image: string;
   parentId?: string;
   featured: boolean;
-  orderIndex: number;
-  filters?: ProductFilter[];
-  icon?: string;
-  metaTitle?: string;
-  metaDescription?: string;
+  productCount: number;
+  orderIndex?: number;
 }
 
-// Product Filters
 export type FilterType = 'select' | 'multi-select' | 'range' | 'boolean';
 
-export interface ProductFilter {
-  id: string;
-  name: string;
-  type: FilterType;
-  field: string;
-  options?: {
-    value: string;
-    label: string;
-  }[];
-  min?: number;
-  max?: number;
-  unit?: string;
-}
-
-// Product Search and Filter Parameters
 export interface ProductFilterParams {
   category?: string;
   brand?: string;
   minPrice?: number;
   maxPrice?: number;
   inStock?: boolean;
-  attributes?: {
-    [key: string]: string | string[] | number | boolean;
-  };
-  sortBy?: 'price_asc' | 'price_desc' | 'rating' | 'newest';
+  search?: string;
+  sort?: string;
+  sortBy?: string;
   page?: number;
   limit?: number;
-  search?: string;
 }
 
-// Brand
 export interface Brand {
   id: string;
   name: string;
   slug: string;
-  logo?: string;
-  description?: string;
-  website?: string;
-  featured: boolean;
+  logo: string;
+  description: string;
+  website: string;
   productCount: number;
+  featured?: boolean;
 }
 
-// Main Product Interface
 export interface Product {
-  // Basic Information
   id: string;
   name: string;
   slug: string;
   description: string;
   shortDescription?: string;
-  sku: string;
-  
-  // Pricing
   price: number;
   originalPrice?: number;
-  discount?: {
-    type: 'percentage' | 'fixed';
-    value: number;
-    startDate?: Date;
-    endDate?: Date;
-  };
-  
-  // Inventory
+  discountPrice?: number;
   stock: number;
-  lowStockThreshold?: number;
-  stockStatus: 'in_stock' | 'low_stock' | 'out_of_stock' | 'discontinued';
-  
-  // Categorization
+  sku: string;
+  stockStatus: 'in_stock' | 'out_of_stock' | 'low_stock' | 'discontinued';
   category: ProductCategory;
-  subcategory?: ProductCategory;
   brand: Brand;
-  tags: string[];
-  
-  // Media
   images: string[];
-  videos?: string[];
-  documents?: MediaFile[];
-  
-  // Specifications
   specs: ProductSpecs;
-  
-  // Variants
   hasVariants: boolean;
   variants?: ProductVariant[];
-  defaultVariant?: string;
-  
-  // Ratings & Reviews
   rating: number;
   reviewCount: number;
-  reviews: Review[];
-  
-  // SEO
+  reviews?: Review[];
   metaTitle?: string;
   metaDescription?: string;
-  keywords?: string[];
-  
-  // Additional Information
   featured: boolean;
-  warranty?: string;
-  shippingInfo?: {
-    weight: number;
-    dimensions: {
-      length: number;
-      width: number;
-      height: number;
-    };
-    freeShipping: boolean;
-  };
-  
-  // Related Products
+  tags: string[];
   relatedProducts?: string[];
-  crossSellProducts?: string[];
-  
-  // Timestamps
   createdAt: Date;
   updatedAt: Date;
 }
 
-// Cart Related Types
 export interface CartItem {
-  product: Product;
-  variant?: ProductVariant;
+  productId: string;
   quantity: number;
-}
-
-export interface CartSummary {
-  subtotal: number;
-  shipping: number;
-  tax: number;
-  discount: number;
-  total: number;
-  itemCount: number;
-}
-
-export interface Cart {
-  id: string;
-  userId?: string;
-  items: CartItem[];
-  summary: CartSummary;
-  couponCode?: string;
-  updatedAt: Date;
+  variant?: ProductVariant;
 }
