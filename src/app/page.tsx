@@ -1,101 +1,133 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { ProductGrid } from '@/components/product/ProductGrid';
+import Link from 'next/link';
+
+// This would typically come from your database
+const FEATURED_PRODUCTS = [
+  {
+    id: '1',
+    name: 'Laptop Gaming Acer Nitro 5 AN515-57-5669 NH.QEHSV.001',
+    slug: 'laptop-gaming-acer-nitro-5-an515',
+    description: 'Laptop Gaming Acer Nitro 5 với CPU Intel Core i5-11400H, RAM 8GB, SSD 512GB',
+    price: 19990000,
+    originalPrice: 22990000,
+    images: ['/images/products/acer-nitro-5.jpg'],
+    category: 'laptop',
+    subcategory: 'gaming',
+    brand: 'Acer',
+    specifications: {
+      cpu: 'Intel Core i5-11400H',
+      ram: '8GB DDR4',
+      storage: '512GB NVMe SSD',
+      gpu: 'NVIDIA RTX 3050 4GB',
+      display: '15.6" FHD IPS 144Hz',
+    },
+    stock: 10,
+    rating: 4.5,
+    reviewCount: 12,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  // Add more sample products here
+];
+
+export default function HomePage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main className="flex-1">
+      {/* Hero Banner */}
+      <section className="relative h-[400px] bg-gradient-to-r from-blue-600 to-blue-800">
+        <div className="container mx-auto px-4 h-full flex items-center">
+          <div className="max-w-2xl text-white">
+            <h1 className="text-4xl font-bold mb-4">
+              Máy Tính Vũng Tàu
+            </h1>
+            <p className="text-xl mb-6">
+              Chuyên cung cấp các sản phẩm công nghệ chính hãng với giá tốt nhất
+            </p>
+            <div className="space-x-4">
+              <a
+                href="/san-pham"
+                className="inline-block bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+              >
+                Xem sản phẩm
+              </a>
+              <a
+                href="/lien-he"
+                className="inline-block bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+              >
+                Liên hệ
+              </a>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </section>
+
+      {/* Featured Categories */}
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold mb-8">Danh Mục Sản Phẩm</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {['Laptop', 'PC Gaming', 'Linh Kiện', 'Màn Hình'].map((category) => (
+              <a
+                key={category}
+                href={`/danh-muc/${category.toLowerCase()}`}
+                className="group relative h-40 bg-white rounded-lg shadow-sm overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/0" />
+                <div className="absolute bottom-4 left-4 text-white">
+                  <h3 className="text-lg font-semibold group-hover:text-blue-400 transition-colors">
+                    {category}
+                  </h3>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <ProductGrid
+            title="Sản Phẩm Nổi Bật"
+            products={FEATURED_PRODUCTS}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us */}
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold mb-8 text-center">
+            Tại Sao Chọn Máy Tính Vũng Tàu?
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                title: 'Sản Phẩm Chính Hãng',
+                description: 'Cam kết 100% sản phẩm chính hãng, nguồn gốc rõ ràng',
+              },
+              {
+                title: 'Giá Cả Tốt Nhất',
+                description: 'Luôn mang đến cho khách hàng mức giá cạnh tranh nhất',
+              },
+              {
+                title: 'Hỗ Trợ 24/7',
+                description: 'Đội ngũ nhân viên chuyên nghiệp, tận tình hỗ trợ',
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="bg-white p-6 rounded-lg text-center"
+              >
+                <h3 className="text-xl font-semibold mb-3">{item.title}</h3>
+                <p className="text-gray-600">{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
