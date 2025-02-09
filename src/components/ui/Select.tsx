@@ -1,132 +1,81 @@
-'use client';
+import { forwardRef, SelectHTMLAttributes } from 'react';
 
-import { SelectHTMLAttributes, forwardRef } from 'react';
-
-export interface Option {
+interface Option {
   value: string | number;
   label: string;
+  disabled?: boolean;
 }
 
-export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'size'> {
+export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
-  options: Option[];
   error?: string;
   helperText?: string;
-  size?: 'sm' | 'md' | 'lg';
-  fullWidth?: boolean;
-  startIcon?: React.ReactNode;
-  endIcon?: React.ReactNode;
+  options: Option[];
+  placeholder?: string;
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  (
-    {
-      label,
-      options,
-      error,
-      helperText,
-      size = 'md',
-      fullWidth = false,
-      startIcon,
-      endIcon,
-      className = '',
-      disabled,
-      ...props
-    },
-    ref
-  ) => {
-    const sizes = {
-      sm: 'py-1 text-sm',
-      md: 'py-2 text-base',
-      lg: 'py-3 text-lg'
-    };
-
-    const width = fullWidth ? 'w-full' : '';
-    const hasError = !!error;
-
+  ({ className = '', label, error, helperText, options, placeholder = 'Chọn một mục', ...props }, ref) => {
     return (
-      <div className={width}>
+      <div className="w-full">
         {label && (
-          <label
-            htmlFor={props.id}
-            className={`block text-sm font-medium mb-1 ${
-              hasError
-                ? 'text-red-500'
-                : disabled
-                ? 'text-gray-400'
-                : 'text-gray-700'
-            }`}
-          >
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             {label}
           </label>
         )}
         <div className="relative">
-          {startIcon && (
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span className={`text-gray-500 ${disabled ? 'opacity-50' : ''}`}>
-                {startIcon}
-              </span>
-            </div>
-          )}
           <select
             ref={ref}
             className={`
-              block rounded-md shadow-sm
-              ${startIcon ? 'pl-10' : 'pl-4'}
-              ${endIcon ? 'pr-10' : 'pr-8'}
-              ${sizes[size]}
-              ${
-                hasError
-                  ? 'border-red-300 text-red-900 focus:ring-red-500 focus:border-red-500'
-                  : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-              }
-              ${
-                disabled
-                  ? 'bg-gray-50 text-gray-500 cursor-not-allowed'
-                  : 'bg-white'
-              }
-              ${width}
+              block w-full rounded-md border-gray-300 shadow-sm
+              focus:border-blue-500 focus:ring-blue-500 sm:text-sm
+              ${error ? 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500' : ''}
+              ${!props.value && !props.defaultValue ? 'text-gray-500' : ''}
               ${className}
             `}
-            disabled={disabled}
-            aria-invalid={hasError}
-            aria-describedby={
-              hasError ? `${props.id}-error` : props.id ? `${props.id}-helper` : undefined
-            }
+            aria-invalid={error ? 'true' : 'false'}
+            aria-describedby={error ? 'error-message' : helperText ? 'helper-text' : undefined}
             {...props}
           >
+            {placeholder && (
+              <option value="" disabled>
+                {placeholder}
+              </option>
+            )}
             {options.map((option) => (
-              <option key={option.value} value={option.value}>
+              <option
+                key={option.value}
+                value={option.value}
+                disabled={option.disabled}
+              >
                 {option.label}
               </option>
             ))}
           </select>
-          <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-            {endIcon || (
-              <svg
-                className={`h-5 w-5 text-gray-400 ${disabled ? 'opacity-50' : ''}`}
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            )}
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+            <svg 
+              className="h-5 w-5 text-gray-400" 
+              xmlns="http://www.w3.org/2000/svg" 
+              viewBox="0 0 20 20" 
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path 
+                fillRule="evenodd" 
+                d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" 
+                clipRule="evenodd" 
+              />
+            </svg>
           </div>
         </div>
-        {(error || helperText) && (
-          <p
-            className={`mt-1 text-sm ${
-              hasError ? 'text-red-500' : 'text-gray-500'
-            }`}
-            id={hasError ? `${props.id}-error` : props.id ? `${props.id}-helper` : undefined}
-          >
-            {error || helperText}
+        {error && (
+          <p className="mt-1 text-sm text-red-600" id="error-message">
+            {error}
+          </p>
+        )}
+        {helperText && !error && (
+          <p className="mt-1 text-sm text-gray-500" id="helper-text">
+            {helperText}
           </p>
         )}
       </div>
@@ -135,3 +84,5 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 );
 
 Select.displayName = 'Select';
+
+export default Select;

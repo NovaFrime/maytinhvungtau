@@ -10,17 +10,17 @@ export const SITE_CONFIG = {
 
 export const NAV_LINKS = {
   home: '/',
-  products: '/products',
-  about: '/about',
-  contact: '/contact',
-  cart: '/cart'
+  products: '/san-pham',
+  about: '/gioi-thieu',
+  contact: '/lien-he',
+  cart: '/gio-hang'
 };
 
 export const PRODUCT_CATEGORIES = [
-  { id: 'laptops', name: 'Laptops', path: '/products?category=laptops' },
-  { id: 'desktops', name: 'Desktops', path: '/products?category=desktops' },
-  { id: 'components', name: 'Components', path: '/products?category=components' },
-  { id: 'accessories', name: 'Accessories', path: '/products?category=accessories' }
+  { id: 'laptops', name: 'Laptop', path: '/san-pham?danh-muc=laptops' },
+  { id: 'desktops', name: 'Máy Tính Để Bàn', path: '/san-pham?danh-muc=desktops' },
+  { id: 'components', name: 'Linh Kiện', path: '/san-pham?danh-muc=components' },
+  { id: 'accessories', name: 'Phụ Kiện', path: '/san-pham?danh-muc=accessories' }
 ];
 
 export const CART_CONFIG = {
@@ -59,16 +59,16 @@ export const STORAGE_KEYS = {
 };
 
 export const ERROR_MESSAGES = {
-  general: 'An error occurred. Please try again.',
-  network: 'Network error. Please check your connection.',
+  general: 'Đã xảy ra lỗi. Vui lòng thử lại.',
+  network: 'Lỗi kết nối. Vui lòng kiểm tra đường truyền.',
   auth: {
-    invalid: 'Invalid email or password',
-    required: 'Please sign in to continue'
+    invalid: 'Email hoặc mật khẩu không đúng',
+    required: 'Vui lòng đăng nhập để tiếp tục'
   },
   validation: {
-    required: 'This field is required',
-    email: 'Please enter a valid email address',
-    phone: 'Please enter a valid phone number',
-    password: 'Password must be between 8 and 32 characters'
+    required: 'Vui lòng điền thông tin này',
+    email: 'Vui lòng nhập email hợp lệ',
+    phone: 'Vui lòng nhập số điện thoại hợp lệ',
+    password: 'Mật khẩu phải từ 8 đến 32 ký tự'
   }
 };

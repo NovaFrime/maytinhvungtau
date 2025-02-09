@@ -1,95 +1,62 @@
-'use client';
+import { useEffect, useState } from 'react';
 
-import { useState, useEffect } from 'react';
-
-interface BackToTopProps {
-  showAt?: number;
-  smoothScroll?: boolean;
-  className?: string;
-}
-
-export const BackToTop = ({
-  showAt = 400,
-  smoothScroll = true,
-  className = ''
-}: BackToTopProps) => {
+export const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    const toggleVisibility = () => {
-      if (window.pageYOffset > showAt) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-    };
-
-    window.addEventListener('scroll', toggleVisibility);
-    return () => window.removeEventListener('scroll', toggleVisibility);
-  }, [showAt]);
-
-  const scrollToTop = () => {
-    if (smoothScroll) {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
+  const toggleVisibility = () => {
+    if (window.pageYOffset > 300) {
+      setIsVisible(true);
     } else {
-      window.scrollTo(0, 0);
+      setIsVisible(false);
     }
   };
 
-  if (!isVisible) {
-    return null;
-  }
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', toggleVisibility);
+    return () => {
+      window.removeEventListener('scroll', toggleVisibility);
+    };
+  }, []);
 
   return (
-    <button
-      onClick={scrollToTop}
-      className={`
-        fixed bottom-8 right-8 z-50
-        p-3 rounded-full shadow-lg
-        bg-blue-600 text-white
-        hover:bg-blue-700
-        transition-all duration-300 ease-in-out
-        transform hover:scale-110
-        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-        ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}
-        ${className}
-      `}
-      aria-label="Back to top"
-    >
-      <svg
-        className="w-6 h-6"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M5 10l7-7m0 0l7 7m-7-7v18"
-        />
-      </svg>
-
-      {/* Ripple effect on click */}
-      <span className="absolute inset-0 rounded-full overflow-hidden">
-        <span className="absolute inset-0 bg-white animate-ripple opacity-25" />
-      </span>
-    </button>
+    <>
+      {isVisible && (
+        <button
+          onClick={scrollToTop}
+          aria-label="Về đầu trang"
+          className={`
+            fixed bottom-4 right-4 p-3 bg-blue-600 text-white
+            rounded-full shadow-lg transition-opacity duration-200
+            hover:bg-blue-700 focus:outline-none focus:ring-2
+            focus:ring-blue-500 focus:ring-offset-2
+            ${isVisible ? 'opacity-100' : 'opacity-0'}
+          `}
+        >
+          <span className="sr-only">Về đầu trang</span>
+          <svg
+            className="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 10l7-7m0 0l7 7m-7-7v18"
+            />
+          </svg>
+        </button>
+      )}
+    </>
   );
 };
 
-// Add BackToTop to App Layout
-export const withBackToTop = (WrappedComponent: React.ComponentType) => {
-  return function WithBackToTop(props: any) {
-    return (
-      <>
-        <WrappedComponent {...props} />
-        <BackToTop />
-      </>
-    );
-  };
-};
+export default BackToTop;

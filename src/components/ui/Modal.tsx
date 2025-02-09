@@ -1,24 +1,19 @@
-'use client';
-
-import { Fragment, ReactNode } from 'react';
-import { createPortal } from 'react-dom';
-import { LoadingSpinner } from './LoadingSpinner';
+import { ReactNode, useEffect } from 'react';
 
 export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  children: ReactNode;
   title?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
-  isLoading?: boolean;
+  children: ReactNode;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  showClose?: boolean;
   closeOnOverlayClick?: boolean;
-  showCloseButton?: boolean;
 }
 
 export interface ConfirmModalProps extends Omit<ModalProps, 'children'> {
   message: string;
-  confirmLabel?: string;
-  cancelLabel?: string;
+  confirmText?: string;
+  cancelText?: string;
   onConfirm: () => void;
   variant?: 'danger' | 'warning' | 'info';
 }
@@ -26,155 +21,133 @@ export interface ConfirmModalProps extends Omit<ModalProps, 'children'> {
 export const Modal = ({
   isOpen,
   onClose,
-  children,
   title,
+  children,
   size = 'md',
-  isLoading = false,
+  showClose = true,
   closeOnOverlayClick = true,
-  showCloseButton = true,
 }: ModalProps) => {
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
-  const sizes = {
+  const sizeClasses = {
     sm: 'max-w-md',
     md: 'max-w-lg',
     lg: 'max-w-2xl',
-    xl: 'max-w-4xl',
-    full: 'max-w-full mx-4'
+    xl: 'max-w-4xl'
   };
 
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget && closeOnOverlayClick) {
-      onClose();
-    }
-  };
-
-  const content = (
-    <Fragment>
+  return (
+    <>
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity z-40"
-        onClick={handleOverlayClick}
+        className="fixed inset-0 bg-black bg-opacity-50 z-40"
+        onClick={() => closeOnOverlayClick && onClose()}
+        aria-hidden="true"
       />
       <div className="fixed inset-0 z-50 overflow-y-auto">
-        <div className="flex min-h-full items-center justify-center p-4">
+        <div className="flex min-h-screen items-center justify-center p-4">
           <div
-            className={`relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 w-full ${sizes[size]}`}
+            className={`
+              bg-white rounded-lg shadow-xl transform transition-all
+              w-full ${sizeClasses[size]} relative
+            `}
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
-            {(title || showCloseButton) && (
-              <div className="px-6 py-4 border-b border-gray-200">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
                 {title && (
-                  <h3 className="text-lg font-medium text-gray-900">{title}</h3>
+                  <h3 className="text-lg font-medium text-gray-900">
+                    {title}
+                  </h3>
                 )}
-                {showCloseButton && (
+                
+                {showClose && (
                   <button
                     type="button"
-                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-500"
+                    className="text-gray-400 hover:text-gray-500"
                     onClick={onClose}
+                    aria-label="Đóng"
                   >
-                    <span className="sr-only">Close</span>
+                    <span className="sr-only">Đóng</span>
                     <svg
                       className="h-6 w-6"
                       fill="none"
                       viewBox="0 0 24 24"
-                      strokeWidth="1.5"
                       stroke="currentColor"
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
+                        strokeWidth={2}
                         d="M6 18L18 6M6 6l12 12"
                       />
                     </svg>
                   </button>
                 )}
               </div>
-            )}
 
-            {/* Content */}
-            <div className="relative">
-              {children}
-              {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75">
-                  <LoadingSpinner size="lg" />
-                </div>
-              )}
+              <div>{children}</div>
             </div>
           </div>
         </div>
       </div>
-    </Fragment>
+    </>
   );
-
-  return typeof document !== 'undefined' ? createPortal(content, document.body) : null;
 };
 
 export const ConfirmModal = ({
   message,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
+  confirmText = 'Xác nhận',
+  cancelText = 'Hủy',
   onConfirm,
   variant = 'danger',
   ...props
 }: ConfirmModalProps) => {
-  const variants = {
-    danger: {
-      button: 'bg-red-600 hover:bg-red-700 focus:ring-red-500',
-      icon: 'text-red-600'
-    },
-    warning: {
-      button: 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500',
-      icon: 'text-yellow-600'
-    },
-    info: {
-      button: 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500',
-      icon: 'text-blue-600'
-    }
+  const variantStyles = {
+    danger: 'bg-red-600 hover:bg-red-700',
+    warning: 'bg-yellow-600 hover:bg-yellow-700',
+    info: 'bg-blue-600 hover:bg-blue-700'
   };
 
   return (
     <Modal size="sm" {...props}>
-      <div className="p-6">
-        <div className="flex items-start">
-          <div className={`flex-shrink-0 ${variants[variant].icon}`}>
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
-              />
-            </svg>
-          </div>
-          <div className="ml-3">
-            <p className="text-sm text-gray-700">{message}</p>
-          </div>
-        </div>
-        <div className="mt-6 flex justify-end space-x-3">
-          <button
-            type="button"
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            onClick={props.onClose}
-          >
-            {cancelLabel}
-          </button>
-          <button
-            type="button"
-            className={`rounded-md px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 ${variants[variant].button}`}
-            onClick={() => {
-              onConfirm();
-              props.onClose();
-            }}
-          >
-            {confirmLabel}
-          </button>
-        </div>
+      <p className="text-sm text-gray-500">{message}</p>
+      <div className="mt-4 flex justify-end space-x-3">
+        <button
+          type="button"
+          className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          onClick={props.onClose}
+        >
+          {cancelText}
+        </button>
+        <button
+          type="button"
+          className={`inline-flex justify-center px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 ${variantStyles[variant]}`}
+          onClick={() => {
+            onConfirm();
+            props.onClose();
+          }}
+        >
+          {confirmText}
+        </button>
       </div>
     </Modal>
   );
 };
+
+export default Modal;
