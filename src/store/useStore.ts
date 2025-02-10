@@ -35,20 +35,22 @@ const useStore = create<StoreState>((set, get) => ({
   cart: [],
   user: {
     user: null,
-    isAuthenticated: false
+    isAuthenticated: false,
   },
   wishlist: [],
 
   addToCart: (product, quantity) => {
-    set(state => {
-      const existingItem = state.cart.find(item => item.product.id === product.id);
+    set((state) => {
+      const existingItem = state.cart.find(
+        (item) => item.product.id === product.id
+      );
       if (existingItem) {
         return {
-          cart: state.cart.map(item =>
+          cart: state.cart.map((item) =>
             item.product.id === product.id
               ? { ...item, quantity: item.quantity + quantity }
               : item
-          )
+          ),
         };
       }
       return { cart: [...state.cart, { product, quantity }] };
@@ -56,16 +58,16 @@ const useStore = create<StoreState>((set, get) => ({
   },
 
   removeFromCart: (productId) => {
-    set(state => ({
-      cart: state.cart.filter(item => item.product.id !== productId)
+    set((state) => ({
+      cart: state.cart.filter((item) => item.product.id !== productId),
     }));
   },
 
   updateCartQuantity: (productId, quantity) => {
-    set(state => ({
-      cart: state.cart.map(item =>
+    set((state) => ({
+      cart: state.cart.map((item) =>
         item.product.id === productId ? { ...item, quantity } : item
-      )
+      ),
     }));
   },
 
@@ -74,26 +76,26 @@ const useStore = create<StoreState>((set, get) => ({
   },
 
   setUser: (userData) => {
-    set(state => ({
+    set((state) => ({
       user: {
         user: userData,
-        isAuthenticated: !!userData
-      }
+        isAuthenticated: !!userData,
+      },
     }));
   },
 
   logout: () => {
-    set(state => ({
+    set((state) => ({
       user: {
         user: null,
-        isAuthenticated: false
-      }
+        isAuthenticated: false,
+      },
     }));
   },
 
   addToWishlist: (product) => {
-    set(state => {
-      if (state.wishlist.find(item => item.id === product.id)) {
+    set((state) => {
+      if (state.wishlist.find((item) => item.id === product.id)) {
         return state;
       }
       return { wishlist: [...state.wishlist, product] };
@@ -101,14 +103,14 @@ const useStore = create<StoreState>((set, get) => ({
   },
 
   removeFromWishlist: (productId) => {
-    set(state => ({
-      wishlist: state.wishlist.filter(product => product.id !== productId)
+    set((state) => ({
+      wishlist: state.wishlist.filter((product) => product.id !== productId),
     }));
   },
 
   clearWishlist: () => {
     set({ wishlist: [] });
-  }
+  },
 }));
 
 export default useStore;

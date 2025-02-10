@@ -16,7 +16,7 @@ export const BackToTop = () => {
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   };
 
@@ -34,8 +34,8 @@ export const BackToTop = () => {
           onClick={scrollToTop}
           aria-label="Về đầu trang"
           className={`
-            fixed bottom-4 right-4 p-3 bg-blue-600 text-white
-            rounded-full shadow-lg transition-opacity duration-200
+            fixed bottom-4 right-4 rounded-full bg-blue-600 p-3
+            text-white shadow-lg transition-opacity duration-200
             hover:bg-blue-700 focus:outline-none focus:ring-2
             focus:ring-blue-500 focus:ring-offset-2
             ${isVisible ? 'opacity-100' : 'opacity-0'}

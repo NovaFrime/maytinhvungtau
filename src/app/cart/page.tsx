@@ -6,20 +6,17 @@ import { CartItem } from '@/components/cart/CartItem';
 import { Button } from '@/components/ui/Button';
 
 export default function CartPage() {
-  const { cart, cartTotal, shippingFee, orderTotal, formatCartPrice } = useCart();
+  const { cart, cartTotal, shippingFee, orderTotal, formatCartPrice } =
+    useCart();
 
   if (cart.length === 0) {
     return (
       <div className="container mx-auto px-4 py-16">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Giỏ hàng của bạn</h1>
-          <p className="text-gray-600 mb-8">
-            Giỏ hàng của bạn đang trống
-          </p>
+          <h1 className="mb-4 text-2xl font-bold">Giỏ hàng của bạn</h1>
+          <p className="mb-8 text-gray-600">Giỏ hàng của bạn đang trống</p>
           <Link href="/san-pham">
-            <Button>
-              Tiếp tục mua sắm
-            </Button>
+            <Button>Tiếp tục mua sắm</Button>
           </Link>
         </div>
       </div>
@@ -28,9 +25,9 @@ export default function CartPage() {
 
   return (
     <div className="container mx-auto px-4 py-16">
-      <h1 className="text-2xl font-bold mb-8">Giỏ hàng của bạn</h1>
+      <h1 className="mb-8 text-2xl font-bold">Giỏ hàng của bạn</h1>
 
-      <div className="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
+      <div className="lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12">
         <div className="lg:col-span-7">
           {cart.map((item) => (
             <CartItem
@@ -43,9 +40,7 @@ export default function CartPage() {
         </div>
 
         <div className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8">
-          <h2 className="text-lg font-medium text-gray-900">
-            Tổng đơn hàng
-          </h2>
+          <h2 className="text-lg font-medium text-gray-900">Tổng đơn hàng</h2>
 
           <div className="mt-6 space-y-4">
             <div className="flex items-center justify-between">
@@ -69,7 +64,8 @@ export default function CartPage() {
             {shippingFee > 0 && (
               <div className="rounded-md bg-blue-50 p-4">
                 <p className="text-sm text-blue-700">
-                  Mua thêm {formatCartPrice(10000000 - cartTotal)} để được miễn phí vận chuyển
+                  Mua thêm {formatCartPrice(10000000 - cartTotal)} để được miễn
+                  phí vận chuyển
                 </p>
               </div>
             )}
@@ -83,20 +79,14 @@ export default function CartPage() {
           </div>
 
           <Link href="/thanh-toan">
-            <Button
-              variant="primary"
-              fullWidth
-              className="mt-6"
-            >
+            <Button variant="primary" fullWidth className="mt-6">
               Tiến hành thanh toán
             </Button>
           </Link>
 
           <div className="mt-6 text-center">
             <Link href="/san-pham">
-              <Button variant="outline">
-                Tiếp tục mua sắm
-              </Button>
+              <Button variant="outline">Tiếp tục mua sắm</Button>
             </Link>
           </div>
         </div>

@@ -15,15 +15,15 @@ export const useProducts = (config: UseProductsConfig = {}) => {
   const [filters, setFilters] = useState<ProductFilterParams>(initialFilters);
 
   const priceRange = useMemo(() => {
-    const prices = products.map(p => p.price);
+    const prices = products.map((p) => p.price);
     return {
       min: Math.min(...prices),
-      max: Math.max(...prices)
+      max: Math.max(...prices),
     };
   }, [products]);
 
   const filteredProducts = useMemo(() => {
-    return products.filter(product => {
+    return products.filter((product) => {
       if (filters.category && product.category.id !== filters.category) {
         return false;
       }
@@ -51,10 +51,10 @@ export const useProducts = (config: UseProductsConfig = {}) => {
           product.description,
           product.brand.name,
           product.category.name,
-          ...product.tags
-        ].map(field => field.toLowerCase());
+          ...product.tags,
+        ].map((field) => field.toLowerCase());
 
-        return searchFields.some(field => field.includes(searchTerm));
+        return searchFields.some((field) => field.includes(searchTerm));
       }
 
       return true;
@@ -87,24 +87,32 @@ export const useProducts = (config: UseProductsConfig = {}) => {
     return sorted;
   }, [filteredProducts, filters]);
 
-  const getRelatedProducts = useCallback((product: Product, limit: number = 4): Product[] => {
-    return products
-      .filter(p => p.id !== product.id)
-      .sort((a, b) => {
-        const aScore = (a.category.id === product.category.id ? 2 : 0) +
-          (a.brand.id === product.brand.id ? 1 : 0);
-        const bScore = (b.category.id === product.category.id ? 2 : 0) +
-          (b.brand.id === product.brand.id ? 1 : 0);
-        return bScore - aScore;
-      })
-      .slice(0, limit);
-  }, [products]);
+  const getRelatedProducts = useCallback(
+    (product: Product, limit: number = 4): Product[] => {
+      return products
+        .filter((p) => p.id !== product.id)
+        .sort((a, b) => {
+          const aScore =
+            (a.category.id === product.category.id ? 2 : 0) +
+            (a.brand.id === product.brand.id ? 1 : 0);
+          const bScore =
+            (b.category.id === product.category.id ? 2 : 0) +
+            (b.brand.id === product.brand.id ? 1 : 0);
+          return bScore - aScore;
+        })
+        .slice(0, limit);
+    },
+    [products]
+  );
 
   const isProductInStock = useCallback((product: Product) => {
     return product.stockStatus === 'in_stock';
   }, []);
 
-  const formatProductPrice = useCallback((price: number) => formatPrice(price), []);
+  const formatProductPrice = useCallback(
+    (price: number) => formatPrice(price),
+    []
+  );
 
   return {
     products: getSortedProducts(),
@@ -114,7 +122,7 @@ export const useProducts = (config: UseProductsConfig = {}) => {
     setFilters,
     getRelatedProducts,
     formatProductPrice,
-    isProductInStock
+    isProductInStock,
   };
 };
 

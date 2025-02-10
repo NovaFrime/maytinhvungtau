@@ -8,7 +8,8 @@ const inter = Inter({ subsets: ['latin', 'vietnamese'] });
 
 export const metadata: Metadata = {
   title: 'Máy Tính Vũng Tàu - Chuyên Laptop, PC Gaming & Linh Kiện Chính Hãng',
-  description: 'Cung cấp laptop, PC gaming, và linh kiện máy tính chính hãng với giá tốt nhất tại Vũng Tàu. Đảm bảo chất lượng, hậu mãi chu đáo.',
+  description:
+    'Cung cấp laptop, PC gaming, và linh kiện máy tính chính hãng với giá tốt nhất tại Vũng Tàu. Đảm bảo chất lượng, hậu mãi chu đáo.',
 };
 
 export default function RootLayout({

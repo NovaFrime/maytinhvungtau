@@ -27,7 +27,7 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
     <div className="space-y-4">
       {/* Main Image */}
       <div
-        className="relative h-[400px] md:h-[600px] bg-gray-100 rounded-lg overflow-hidden cursor-zoom-in"
+        className="relative h-[400px] cursor-zoom-in overflow-hidden rounded-lg bg-gray-100 md:h-[600px]"
         onMouseEnter={() => setIsZoomed(true)}
         onMouseLeave={() => setIsZoomed(false)}
         onMouseMove={handleMouseMove}
@@ -51,7 +51,7 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
             <button
               key={index}
               onClick={() => setSelectedImage(index)}
-              className={`relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden ${
+              className={`relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md ${
                 selectedImage === index
                   ? 'ring-2 ring-blue-500'
                   : 'ring-1 ring-gray-200'
@@ -70,7 +70,7 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
       )}
 
       {/* Image Counter */}
-      <div className="text-sm text-gray-500 text-center">
+      <div className="text-center text-sm text-gray-500">
         Image {selectedImage + 1} of {images.length}
       </div>
 
@@ -78,12 +78,16 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
       {images.length > 1 && (
         <>
           <button
-            onClick={() => setSelectedImage((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-75 p-2 rounded-full hover:bg-opacity-100 transition-opacity"
+            onClick={() =>
+              setSelectedImage((prev) =>
+                prev === 0 ? images.length - 1 : prev - 1
+              )
+            }
+            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white bg-opacity-75 p-2 transition-opacity hover:bg-opacity-100"
             aria-label="Previous image"
           >
             <svg
-              className="w-6 h-6 text-gray-800"
+              className="h-6 w-6 text-gray-800"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -97,12 +101,16 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
             </svg>
           </button>
           <button
-            onClick={() => setSelectedImage((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-75 p-2 rounded-full hover:bg-opacity-100 transition-opacity"
+            onClick={() =>
+              setSelectedImage((prev) =>
+                prev === images.length - 1 ? 0 : prev + 1
+              )
+            }
+            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white bg-opacity-75 p-2 transition-opacity hover:bg-opacity-100"
             aria-label="Next image"
           >
             <svg
-              className="w-6 h-6 text-gray-800"
+              className="h-6 w-6 text-gray-800"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

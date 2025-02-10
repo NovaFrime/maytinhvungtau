@@ -10,6 +10,6 @@ export const slugify = (str: string): string => {
 export const formatPrice = (price: number): string => {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
-    currency: 'VND'
+    currency: 'VND',
   }).format(price);
 };

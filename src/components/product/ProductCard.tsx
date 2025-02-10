@@ -16,7 +16,9 @@ export function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
 
   const discountPercentage = product.originalPrice
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+    ? Math.round(
+        ((product.originalPrice - product.price) / product.originalPrice) * 100
+      )
     : 0;
 
   return (
@@ -26,7 +28,7 @@ export function ProductCard({ product }: ProductCardProps) {
           -{discountPercentage}%
         </div>
       )}
-      
+
       <Link href={`/san-pham/${product.slug}`}>
         <div className="relative aspect-square overflow-hidden rounded-md">
           <Image
@@ -67,7 +69,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <Button
           onClick={() => addItem(product, 1)}
           className="w-full"
-          variant="default"
+          variant="primary"
         >
           Thêm vào giỏ hàng
         </Button>

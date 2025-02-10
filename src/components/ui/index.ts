@@ -13,7 +13,7 @@ export type { InputProps } from './Input';
 export { LoadingSpinner } from './LoadingSpinner';
 
 export { Modal, ConfirmModal } from './Modal';
-export type { ModalProps, ConfirmModalProps } from './Modal';
+export type { ModalProps, ConfirmModalProps, ModalSize } from './Modal';
 
 export { Select } from './Select';
 export type { SelectProps } from './Select';
@@ -53,5 +53,5 @@ export const VIETNAMESE_MESSAGES = {
   freeShipping: 'Miễn phí vận chuyển',
   orderTotal: 'Tổng đơn hàng',
   checkout: 'Thanh toán',
-  emptyCart: 'Giỏ hàng trống'
+  emptyCart: 'Giỏ hàng trống',
 } as const;

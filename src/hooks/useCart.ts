@@ -3,10 +3,14 @@ import useStore from '@/store/useStore';
 import { formatPrice } from '@/utils/format';
 
 export const useCart = () => {
-  const { cart, addToCart, removeFromCart, updateCartQuantity, clearCart } = useStore();
+  const { cart, addToCart, removeFromCart, updateCartQuantity, clearCart } =
+    useStore();
 
   const cartTotal = useMemo(() => {
-    return cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    return cart.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0
+    );
   }, [cart]);
 
   const cartItemsCount = useMemo(() => {
@@ -33,7 +37,7 @@ export const useCart = () => {
     removeFromCart,
     updateCartQuantity,
     clearCart,
-    formatCartPrice
+    formatCartPrice,
   };
 };
 

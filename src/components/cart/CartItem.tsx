@@ -23,13 +23,13 @@ export const CartItem = ({ product, quantity }: CartItemProps) => {
   };
 
   return (
-    <div className="flex items-center py-6 border-b border-gray-200">
-      <div className="flex-shrink-0 w-24 h-24 relative">
+    <div className="flex items-center border-b border-gray-200 py-6">
+      <div className="relative h-24 w-24 flex-shrink-0">
         <Image
           src={product.images[0]}
           alt={product.name}
           fill
-          className="object-cover rounded"
+          className="rounded object-cover"
         />
       </div>
 
@@ -39,13 +39,12 @@ export const CartItem = ({ product, quantity }: CartItemProps) => {
             <h3 className="text-lg font-medium text-gray-900">
               {product.name}
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              {product.brand.name}
-            </p>
+            <p className="mt-1 text-sm text-gray-500">{product.brand.name}</p>
             {product.discountPrice && (
               <div className="mt-1">
-                <span className="text-sm text-red-600 font-medium">
-                  Tiết kiệm: {formatCartPrice(product.price - product.discountPrice)}
+                <span className="text-sm font-medium text-red-600">
+                  Tiết kiệm:{' '}
+                  {formatCartPrice(product.price - product.discountPrice)}
                 </span>
               </div>
             )}
@@ -72,7 +71,7 @@ export const CartItem = ({ product, quantity }: CartItemProps) => {
         </div>
 
         <div className="mt-4 flex items-center justify-between">
-          <div className="flex items-center border rounded">
+          <div className="flex items-center rounded border">
             <button
               className="px-3 py-1 text-gray-600 hover:text-gray-700"
               onClick={() => handleQuantityChange(quantity - 1)}
@@ -80,9 +79,7 @@ export const CartItem = ({ product, quantity }: CartItemProps) => {
             >
               -
             </button>
-            <span className="px-3 py-1 text-gray-600 border-x">
-              {quantity}
-            </span>
+            <span className="border-x px-3 py-1 text-gray-600">{quantity}</span>
             <button
               className="px-3 py-1 text-gray-600 hover:text-gray-700"
               onClick={() => handleQuantityChange(quantity + 1)}

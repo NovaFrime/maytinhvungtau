@@ -9,18 +9,18 @@ export const Footer = () => {
     company: [
       { label: 'Về chúng tôi', href: '/gioi-thieu' },
       { label: 'Tuyển dụng', href: '/tuyen-dung' },
-      { label: 'Liên hệ', href: '/lien-he' }
+      { label: 'Liên hệ', href: '/lien-he' },
     ],
     support: [
       { label: 'Hướng dẫn mua hàng', href: '/huong-dan-mua-hang' },
       { label: 'Chính sách bảo hành', href: '/chinh-sach-bao-hanh' },
       { label: 'Chính sách vận chuyển', href: '/chinh-sach-van-chuyen' },
-      { label: 'Phương thức thanh toán', href: '/phuong-thuc-thanh-toan' }
+      { label: 'Phương thức thanh toán', href: '/phuong-thuc-thanh-toan' },
     ],
     legal: [
       { label: 'Điều khoản dịch vụ', href: '/dieu-khoan-dich-vu' },
-      { label: 'Chính sách bảo mật', href: '/chinh-sach-bao-mat' }
-    ]
+      { label: 'Chính sách bảo mật', href: '/chinh-sach-bao-mat' },
+    ],
   };
 
   const socialLinks = [
@@ -35,7 +35,7 @@ export const Footer = () => {
             clipRule="evenodd"
           />
         </svg>
-      )
+      ),
     },
     {
       name: 'Instagram',
@@ -48,7 +48,7 @@ export const Footer = () => {
             clipRule="evenodd"
           />
         </svg>
-      )
+      ),
     },
     {
       name: 'YouTube',
@@ -57,14 +57,14 @@ export const Footer = () => {
         <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
           <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
         </svg>
-      )
-    }
+      ),
+    },
   ];
 
   return (
     <footer className="bg-gray-50">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div>
             <Link href="/" className="flex items-center">
               <Image
@@ -77,7 +77,8 @@ export const Footer = () => {
               <span className="text-xl font-bold">Máy Tính Vũng Tàu</span>
             </Link>
             <p className="mt-4 text-gray-600">
-              Chuyên cung cấp các sản phẩm máy tính, laptop và phụ kiện chính hãng
+              Chuyên cung cấp các sản phẩm máy tính, laptop và phụ kiện chính
+              hãng
             </p>
           </div>
 
@@ -88,7 +89,10 @@ export const Footer = () => {
             <ul className="mt-4 space-y-3">
               {links.company.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-gray-600 hover:text-gray-900">
+                  <Link
+                    href={link.href}
+                    className="text-gray-600 hover:text-gray-900"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -103,7 +107,10 @@ export const Footer = () => {
             <ul className="mt-4 space-y-3">
               {links.support.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-gray-600 hover:text-gray-900">
+                  <Link
+                    href={link.href}
+                    className="text-gray-600 hover:text-gray-900"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -118,7 +125,10 @@ export const Footer = () => {
             <ul className="mt-4 space-y-3">
               {links.legal.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-gray-600 hover:text-gray-900">
+                  <Link
+                    href={link.href}
+                    className="text-gray-600 hover:text-gray-900"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -128,7 +138,7 @@ export const Footer = () => {
         </div>
 
         <div className="mt-8 border-t border-gray-200 pt-8">
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <p className="text-gray-500">
               © {currentYear} Máy Tính Vũng Tàu. Đã đăng ký bản quyền.
             </p>

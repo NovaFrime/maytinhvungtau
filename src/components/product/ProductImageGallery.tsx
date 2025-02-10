@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { Modal } from '@/components/ui/Modal';
+import { Modal, ModalSize } from '@/components/ui/Modal';
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -17,7 +17,7 @@ export const ProductImageGallery = ({
   alt,
   aspectRatio = 'square',
   enableZoom = true,
-  thumbnailPosition = 'bottom'
+  thumbnailPosition = 'bottom',
 }: ProductImageGalleryProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
@@ -28,13 +28,14 @@ export const ProductImageGallery = ({
   const aspectRatioClasses = {
     square: 'aspect-square',
     portrait: 'aspect-[3/4]',
-    landscape: 'aspect-[4/3]'
+    landscape: 'aspect-[4/3]',
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!enableZoom || !mainImageRef.current) return;
 
-    const { left, top, width, height } = mainImageRef.current.getBoundingClientRect();
+    const { left, top, width, height } =
+      mainImageRef.current.getBoundingClientRect();
     const x = ((e.clientX - left) / width) * 100;
     const y = ((e.clientY - top) / height) * 100;
 
@@ -93,32 +94,62 @@ export const ProductImageGallery = ({
           ${isZoomed ? 'scale-150' : 'scale-100'}
           cursor-zoom-in
         `}
-        style={isZoomed ? {
-          transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`
-        } : undefined}
+        style={
+          isZoomed
+            ? {
+                transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+              }
+            : undefined
+        }
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         priority={selectedIndex === 0}
       />
-      
+
       {/* Navigation Arrows */}
       {images.length > 1 && (
         <>
           <button
-            onClick={(e) => { e.stopPropagation(); previousImage(); }}
-            className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800"
+            onClick={(e) => {
+              e.stopPropagation();
+              previousImage();
+            }}
+            className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 text-gray-800 hover:bg-white"
             aria-label="Previous image"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); nextImage(); }}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800"
+            onClick={(e) => {
+              e.stopPropagation();
+              nextImage();
+            }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 text-gray-800 hover:bg-white"
             aria-label="Next image"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </button>
         </>
@@ -127,16 +158,18 @@ export const ProductImageGallery = ({
   );
 
   const renderThumbnails = () => (
-    <div className={`
-      flex gap-2 mt-4
+    <div
+      className={`
+      mt-4 flex gap-2
       ${thumbnailPosition === 'left' ? 'flex-col' : 'flex-row overflow-x-auto'}
-    `}>
+    `}
+    >
       {images.map((image, index) => (
         <button
           key={index}
           onClick={() => setSelectedIndex(index)}
           className={`
-            relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden
+            relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md
             ${selectedIndex === index ? 'ring-2 ring-blue-500' : 'ring-1 ring-gray-200'}
           `}
         >
@@ -158,7 +191,7 @@ export const ProductImageGallery = ({
       onClose={() => setIsLightboxOpen(false)}
       size="full"
     >
-      <div className="relative h-screen flex items-center justify-center bg-black">
+      <div className="relative flex h-screen items-center justify-center bg-black">
         <Image
           src={images[selectedIndex]}
           alt={`${alt} - Image ${selectedIndex + 1}`}
@@ -166,26 +199,46 @@ export const ProductImageGallery = ({
           className="object-contain"
           sizes="100vw"
         />
-        
+
         {/* Navigation Arrows */}
         {images.length > 1 && (
           <>
             <button
               onClick={previousImage}
-              className="absolute left-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white"
+              className="absolute left-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
               aria-label="Previous image"
             >
-              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <svg
+                className="h-8 w-8"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
               </svg>
             </button>
             <button
               onClick={nextImage}
-              className="absolute right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white"
+              className="absolute right-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
               aria-label="Next image"
             >
-              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <svg
+                className="h-8 w-8"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </button>
           </>
@@ -195,14 +248,18 @@ export const ProductImageGallery = ({
   );
 
   return (
-    <div className={`
+    <div
+      className={`
       flex
       ${thumbnailPosition === 'left' ? 'flex-row gap-4' : 'flex-col'}
-    `}>
+    `}
+    >
       {thumbnailPosition === 'left' && images.length > 1 && renderThumbnails()}
       <div className="flex-grow">
         {renderMainImage()}
-        {thumbnailPosition === 'bottom' && images.length > 1 && renderThumbnails()}
+        {thumbnailPosition === 'bottom' &&
+          images.length > 1 &&
+          renderThumbnails()}
       </div>
       {renderLightbox()}
     </div>

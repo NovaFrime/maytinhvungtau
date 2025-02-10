@@ -23,7 +23,12 @@ export interface UserAddress {
   isDefault: boolean;
 }
 
-export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus =
+  | 'pending'
+  | 'processing'
+  | 'shipped'
+  | 'delivered'
+  | 'cancelled';
 
 export interface ApiResponse<T> {
   data: T;

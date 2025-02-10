@@ -10,12 +10,9 @@ import { SORT_OPTIONS } from '@/types/product';
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
-  const {
-    products,
-    filters,
-    setFilters,
-    formatProductPrice
-  } = useProducts({ products: mockProducts });
+  const { products, filters, setFilters } = useProducts({
+    products: mockProducts,
+  });
 
   useEffect(() => {
     const category = searchParams.get('category');
@@ -28,14 +25,14 @@ export default function ProductsPage() {
       category: category || undefined,
       brand: brand || undefined,
       search: search || undefined,
-      sort: sort || undefined
+      sort: sort || undefined,
     }));
   }, [searchParams, setFilters]);
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row gap-8">
-        <aside className="w-full md:w-64 flex-shrink-0">
+      <div className="flex flex-col gap-8 md:flex-row">
+        <aside className="w-full flex-shrink-0 md:w-64">
           <ProductFilter
             filters={filters}
             onChange={setFilters}
@@ -46,15 +43,12 @@ export default function ProductsPage() {
         <main className="flex-1">
           <div className="mb-6">
             <h1 className="text-2xl font-bold">Tất cả sản phẩm</h1>
-            <p className="text-gray-600 mt-2">
+            <p className="mt-2 text-gray-600">
               Hiển thị {products.length} sản phẩm
             </p>
           </div>
 
-          <ProductGrid
-            products={products}
-            formatPrice={formatProductPrice}
-          />
+          <ProductGrid products={products} />
         </main>
       </div>
     </div>

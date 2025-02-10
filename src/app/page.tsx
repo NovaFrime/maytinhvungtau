@@ -1,60 +1,33 @@
 'use client';
 
 import { ProductGrid } from '@/components/product/ProductGrid';
+import { mockProducts } from '@/lib/mockData';
 import Link from 'next/link';
 
-// This would typically come from your database
-const FEATURED_PRODUCTS = [
-  {
-    id: '1',
-    name: 'Laptop Gaming Acer Nitro 5 AN515-57-5669 NH.QEHSV.001',
-    slug: 'laptop-gaming-acer-nitro-5-an515',
-    description: 'Laptop Gaming Acer Nitro 5 với CPU Intel Core i5-11400H, RAM 8GB, SSD 512GB',
-    price: 19990000,
-    originalPrice: 22990000,
-    images: ['/images/products/acer-nitro-5.jpg'],
-    category: 'laptop',
-    subcategory: 'gaming',
-    brand: 'Acer',
-    specifications: {
-      cpu: 'Intel Core i5-11400H',
-      ram: '8GB DDR4',
-      storage: '512GB NVMe SSD',
-      gpu: 'NVIDIA RTX 3050 4GB',
-      display: '15.6" FHD IPS 144Hz',
-    },
-    stock: 10,
-    rating: 4.5,
-    reviewCount: 12,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  // Add more sample products here
-];
+// Filter featured products from mockData
+const FEATURED_PRODUCTS = mockProducts.filter((product) => product.featured);
 
 export default function HomePage() {
   return (
     <main className="flex-1">
       {/* Hero Banner */}
       <section className="relative h-[400px] bg-gradient-to-r from-blue-600 to-blue-800">
-        <div className="container mx-auto px-4 h-full flex items-center">
+        <div className="container mx-auto flex h-full items-center px-4">
           <div className="max-w-2xl text-white">
-            <h1 className="text-4xl font-bold mb-4">
-              Máy Tính Vũng Tàu
-            </h1>
-            <p className="text-xl mb-6">
+            <h1 className="mb-4 text-4xl font-bold">Máy Tính Vũng Tàu</h1>
+            <p className="mb-6 text-xl">
               Chuyên cung cấp các sản phẩm công nghệ chính hãng với giá tốt nhất
             </p>
             <div className="space-x-4">
               <a
                 href="/san-pham"
-                className="inline-block bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+                className="inline-block rounded-lg bg-white px-6 py-3 font-semibold text-blue-600 transition-colors hover:bg-blue-50"
               >
                 Xem sản phẩm
               </a>
               <a
                 href="/lien-he"
-                className="inline-block bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+                className="inline-block rounded-lg border-2 border-white bg-transparent px-6 py-3 font-semibold text-white transition-colors hover:bg-white hover:text-blue-600"
               >
                 Liên hệ
               </a>
@@ -64,24 +37,26 @@ export default function HomePage() {
       </section>
 
       {/* Featured Categories */}
-      <section className="py-12 bg-gray-50">
+      <section className="bg-gray-50 py-12">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-8">Danh Mục Sản Phẩm</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {['Laptop', 'PC Gaming', 'Linh Kiện', 'Màn Hình'].map((category) => (
-              <a
-                key={category}
-                href={`/danh-muc/${category.toLowerCase()}`}
-                className="group relative h-40 bg-white rounded-lg shadow-sm overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/0" />
-                <div className="absolute bottom-4 left-4 text-white">
-                  <h3 className="text-lg font-semibold group-hover:text-blue-400 transition-colors">
-                    {category}
-                  </h3>
-                </div>
-              </a>
-            ))}
+          <h2 className="mb-8 text-2xl font-bold">Danh Mục Sản Phẩm</h2>
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+            {['Laptop', 'PC Gaming', 'Linh Kiện', 'Màn Hình'].map(
+              (category) => (
+                <a
+                  key={category}
+                  href={`/danh-muc/${category.toLowerCase()}`}
+                  className="group relative h-40 overflow-hidden rounded-lg bg-white shadow-sm"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/0" />
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h3 className="text-lg font-semibold transition-colors group-hover:text-blue-400">
+                      {category}
+                    </h3>
+                  </div>
+                </a>
+              )
+            )}
           </div>
         </div>
       </section>
@@ -89,28 +64,27 @@ export default function HomePage() {
       {/* Featured Products */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <ProductGrid
-            title="Sản Phẩm Nổi Bật"
-            products={FEATURED_PRODUCTS}
-          />
+          <ProductGrid title="Sản Phẩm Nổi Bật" products={FEATURED_PRODUCTS} />
         </div>
       </section>
 
       {/* Why Choose Us */}
-      <section className="py-12 bg-gray-50">
+      <section className="bg-gray-50 py-12">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-8 text-center">
+          <h2 className="mb-8 text-center text-2xl font-bold">
             Tại Sao Chọn Máy Tính Vũng Tàu?
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {[
               {
                 title: 'Sản Phẩm Chính Hãng',
-                description: 'Cam kết 100% sản phẩm chính hãng, nguồn gốc rõ ràng',
+                description:
+                  'Cam kết 100% sản phẩm chính hãng, nguồn gốc rõ ràng',
               },
               {
                 title: 'Giá Cả Tốt Nhất',
-                description: 'Luôn mang đến cho khách hàng mức giá cạnh tranh nhất',
+                description:
+                  'Luôn mang đến cho khách hàng mức giá cạnh tranh nhất',
               },
               {
                 title: 'Hỗ Trợ 24/7',
@@ -119,9 +93,9 @@ export default function HomePage() {
             ].map((item) => (
               <div
                 key={item.title}
-                className="bg-white p-6 rounded-lg text-center"
+                className="rounded-lg bg-white p-6 text-center"
               >
-                <h3 className="text-xl font-semibold mb-3">{item.title}</h3>
+                <h3 className="mb-3 text-xl font-semibold">{item.title}</h3>
                 <p className="text-gray-600">{item.description}</p>
               </div>
             ))}

@@ -32,16 +32,17 @@ export const Header = () => {
             </Link>
           </div>
 
-          <nav className="hidden md:flex space-x-8">
+          <nav className="hidden space-x-8 md:flex">
             {navigation.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={`
                   text-sm font-medium transition-colors
-                  ${pathname === item.href
-                    ? 'text-blue-600'
-                    : 'text-gray-700 hover:text-blue-600'
+                  ${
+                    pathname === item.href
+                      ? 'text-blue-600'
+                      : 'text-gray-700 hover:text-blue-600'
                   }
                 `}
               >
@@ -73,7 +74,7 @@ export const Header = () => {
 
             <Link
               href="/gio-hang"
-              className="p-2 text-gray-500 hover:text-blue-600 relative"
+              className="relative p-2 text-gray-500 hover:text-blue-600"
               aria-label="Giỏ hàng"
             >
               <svg

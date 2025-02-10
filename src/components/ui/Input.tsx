@@ -9,28 +9,34 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className = '', label, error, helperText, startIcon, endIcon, ...props }, ref) => {
+  (
+    { className = '', label, error, helperText, startIcon, endIcon, ...props },
+    ref
+  ) => {
     const defaultPlaceholders = {
       email: 'Nhập địa chỉ email',
       password: 'Nhập mật khẩu',
       search: 'Tìm kiếm...',
       text: 'Nhập nội dung',
       tel: 'Nhập số điện thoại',
-      number: 'Nhập số'
+      number: 'Nhập số',
     };
 
-    const placeholder = props.placeholder || defaultPlaceholders[props.type as keyof typeof defaultPlaceholders] || '';
+    const placeholder =
+      props.placeholder ||
+      defaultPlaceholders[props.type as keyof typeof defaultPlaceholders] ||
+      '';
 
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             {label}
           </label>
         )}
         <div className="relative rounded-md shadow-sm">
           {startIcon && (
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
               <span className="text-gray-500 sm:text-sm">{startIcon}</span>
             </div>
           )}
@@ -46,11 +52,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             `}
             placeholder={placeholder}
             aria-invalid={error ? 'true' : 'false'}
-            aria-describedby={error ? 'error-message' : helperText ? 'helper-text' : undefined}
+            aria-describedby={
+              error ? 'error-message' : helperText ? 'helper-text' : undefined
+            }
             {...props}
           />
           {endIcon && (
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
               <span className="text-gray-500 sm:text-sm">{endIcon}</span>
             </div>
           )}

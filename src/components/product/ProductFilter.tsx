@@ -10,11 +10,18 @@ interface ProductFilterProps {
   sortOptions: Array<{ value: string; label: string }>;
 }
 
-export const ProductFilter = ({ filters, onChange, sortOptions }: ProductFilterProps) => {
-  const handleChange = (key: keyof ProductFilterParams, value: string | boolean | number | undefined) => {
-    onChange(prev => ({
+export const ProductFilter = ({
+  filters,
+  onChange,
+  sortOptions,
+}: ProductFilterProps) => {
+  const handleChange = (
+    key: keyof ProductFilterParams,
+    value: string | boolean | number | undefined
+  ) => {
+    onChange((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
   };
 
@@ -33,7 +40,7 @@ export const ProductFilter = ({ filters, onChange, sortOptions }: ProductFilterP
 
       <div>
         <h3 className="text-lg font-medium text-gray-900">Bộ lọc</h3>
-        
+
         <div className="mt-4 space-y-4">
           <div>
             <label className="inline-flex items-center">
@@ -46,7 +53,7 @@ export const ProductFilter = ({ filters, onChange, sortOptions }: ProductFilterP
               <span className="ml-2">Còn hàng</span>
             </label>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Giá từ
@@ -55,11 +62,16 @@ export const ProductFilter = ({ filters, onChange, sortOptions }: ProductFilterP
               type="number"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={filters.minPrice || ''}
-              onChange={(e) => handleChange('minPrice', e.target.value ? Number(e.target.value) : undefined)}
+              onChange={(e) =>
+                handleChange(
+                  'minPrice',
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
               placeholder="Giá thấp nhất"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Đến
@@ -68,7 +80,12 @@ export const ProductFilter = ({ filters, onChange, sortOptions }: ProductFilterP
               type="number"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={filters.maxPrice || ''}
-              onChange={(e) => handleChange('maxPrice', e.target.value ? Number(e.target.value) : undefined)}
+              onChange={(e) =>
+                handleChange(
+                  'maxPrice',
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
               placeholder="Giá cao nhất"
             />
           </div>

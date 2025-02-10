@@ -83,19 +83,14 @@ export interface OrderItem {
   product: Product;
 }
 
-export type OrderStatus = 
+export type OrderStatus =
   | 'pending'
   | 'confirmed'
   | 'shipping'
   | 'delivered'
   | 'cancelled';
 
-export type PaymentMethod = 
-  | 'cod'
-  | 'banking'
-  | 'momo'
-  | 'vnpay'
-  | 'zalopay';
+export type PaymentMethod = 'cod' | 'banking' | 'momo' | 'vnpay' | 'zalopay';
 
 export interface Review {
   id: string;
@@ -121,4 +116,4 @@ export interface Promotion {
   productIds?: string[];
   categoryIds?: string[];
   active: boolean;
-} 
+}
